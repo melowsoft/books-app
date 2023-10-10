@@ -1,71 +1,32 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const Container = styled.div`
-  padding: 50px 20px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+export const Container = styled.div``;
 
-  section {
-    margin-bottom: 30px;
-  }
-`;
-
-export const WelcomeTitle = styled.div`
-  color: #54565a;
-  font-size: 24px;
-  font-weight: 600;
-
-  span {
-    color: #ff6978;
-  }
-`;
-export const SectionHeader = styled.div`
+export const Hero = styled.div`
+  padding-left: 40px;
+  padding-top: 60px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 15px;
-
-  h3 {
-    font-size: 18px;
-    color: #3f4043;
-  }
-  span {
-    font-size: 14px;
-    color: #4abdf1;
-    cursor: pointer;
-  }
-`;
-export const Banner = styled.div`
-  display: inline-flex;
-  img {
-    cursor: pointer;
-    :first-child {
-      margin-right: 4px;
-    }
-  }
 `;
 
-export const SearchBar = styled.form`
-  position: relative;
+export const HeroText = styled.img`
+  width: 500px;
+`;
+
+export const HeroLeft = styled.div`
+  padding-top: 80px;
+`;
+
+export const HeroRight = styled.div``;
+
+export const HeroImage = styled.img``;
+
+export const HeroWrapper = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  justify-content: center;
+`;
 
-  button {
-    all: unset;
-    position: absolute;
-    left: 15px;
-    top: 16px;
-    cursor: pointer;
-  }
-  input {
-    border: none;
-    border-radius: 10px;
-    width: 100%;
-    padding: 16px 42px;
-    font-size: 16px;
-    line-height: 18px;
-  }
+export const HeroSubText = styled.h5`
+  text-transform: uppercase;
+  color: #fd671d;
 `;
