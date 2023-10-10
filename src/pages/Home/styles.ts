@@ -10,6 +10,7 @@ export const Hero = styled.div`
 
 export const HeroText = styled.img`
   width: 500px;
+  margin-bottom: 20px;
 `;
 
 export const HeroLeft = styled.div`
@@ -30,3 +31,37 @@ export const HeroSubText = styled.h5`
   text-transform: uppercase;
   color: #fd671d;
 `;
+
+export const RoundButton = styled.button`
+  border: none;
+  width: 40px;
+  height: 40px;
+  background-color: #0c0b22;
+  color: #ffffff;
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const SearchAreaWrapper = styled.div`
+  width: 400px;
+`;
+
+export const SmallButton = styled.button`
+
+  border: none;
+  background: none;
+  font-size: 14px;
+`;
+
+export const ControlsWrap = styled.div`
+display: "flex"; 
+justify-content: "space-between"; 
+align-items: "center";
+margin-top: 8px;
+padding: 0 15px;
+`

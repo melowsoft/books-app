@@ -1,20 +1,22 @@
 import React from "react";
 import { InputWrapper, Input } from "./styles";
 
-interface InputFeildProps { 
+interface InputFieldProps { 
     placeholder: string;
     type: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    button?: React.ReactNode;
 }
 
-const InputFeild = ({ placeholder, type, value, onChange }: InputFeildProps) => { 
+const InputField = ({ placeholder, button, type, value, onChange }: InputFieldProps) => { 
 
     return (
         <InputWrapper>
-            <Input />
+            <Input placeholder={placeholder} value={value} type={type} onChange={onChange} />
+            {button ? button : null}
         </InputWrapper>
     );
 }
 
-export default InputFeild;
+export default InputField;
