@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
 @font-face {
@@ -20,7 +20,7 @@ export default createGlobalStyle`
   -moz-osx-font-smoothing: grayscale;
 }
 body {
-  background: #F2F2F2;
+  background: #fffdfb;
   -ms-overflow-style: none;
   scrollbar-width: none;
   :-webkit-scrollbar {
