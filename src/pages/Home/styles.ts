@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+export const Container = styled.div`
+
+`;
 
 export const Hero = styled.div`
   padding-left: 40px;
@@ -52,16 +54,31 @@ export const SearchAreaWrapper = styled.div`
 `;
 
 export const SmallButton = styled.button`
-
   border: none;
   background: none;
   font-size: 14px;
 `;
 
 export const ControlsWrap = styled.div`
-display: "flex"; 
-justify-content: "space-between"; 
-align-items: "center";
-margin-top: 8px;
-padding: 0 15px;
-`
+  display: "flex";
+  justify-content: "space-between";
+  align-items: "center";
+  margin-top: 8px;
+  padding: 0 15px;
+`;
+export const MoreOptionsWrap = styled.div`
+  margin-top: 10px;
+  display: grid;
+  grid-row-gap: 10px;
+`;
+
+export const SearchResultSection = styled.section`
+border-top: 1px solid #302f2f;
+  margin-top: 100px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  max-width: 1200px;
+  grid-column-gap: 20px;
+  grid-row-gap: 30px;
+  padding-top: 40px;
+`;
