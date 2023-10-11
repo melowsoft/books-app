@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Container,
   Hero,
@@ -22,37 +22,129 @@ import { BsArrowRight } from "react-icons/bs";
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 import BookItem from "../../components/BookItem";
-import api from "../../api";
+import Helpers from "../../api/helpers";
 
 const Home: React.FC = () => {
+  const isInitialMount = useRef(true);
   const [isAdvancedSearch, setIsAdvancedSearch] =
     React.useState<boolean>(false);
   const [titleTerm, setTitleTerm] = React.useState<string>("");
   const [authorTerm, setAuthorTerm] = React.useState<string>("");
   const [isbnTerm, setIsbnTerm] = React.useState<string>("");
-  const [maxResults, setMaxResults] = React.useState<number>(10);
+  const [subjectTerm, setSubjectTerm] = React.useState<string>("");
+  //const [maxResults, setMaxResults] = React.useState<number>(10);
   const [publisherTerm, setPublisherTerm] = React.useState<string>("");
-  const [titleErrors, setTitleErrors] = React.useState<string[]>([]);
+  const [titleErrors, setTitleErrors] = React.useState<string>("");
+  const [otherErrors, setOtherErrors] = React.useState<string>("");
+  const [startIndex, setStartIndex] = React.useState<number>(0);
+  const [totalItems, setTotalItems] = React.useState<number>(0);
+  const [searchResults, setSearchResults] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const titleInputRef = useRef<HTMLInputElement | null>(null);
 
-  const searchBooks = () => {
-    if (titleTerm === "") {
-      setTitleErrors([...titleErrors, "Please enter a book title"]);
+  const state = React.useMemo(
+    () => ({
+      intitle: titleTerm,
+      inauthor: authorTerm,
+      isbn: isbnTerm,
+      inpublisherTerm: publisherTerm,
+      inpublisher: publisherTerm,
+      insubject: subjectTerm,
+      startIndex,
+      totalItems,
+      searchResults,
+      loading,
+    }),
+    [
+      authorTerm,
+      isbnTerm,
+      loading,
+      publisherTerm,
+      searchResults,
+      startIndex,
+      subjectTerm,
+      titleTerm,
+      totalItems,
+    ]
+  );
+
+  // const makeAQuery = React.useCallback(async () => {
+  //   const query = Helpers.makeQuery(state);
+  //   const response = await Helpers.getList(query, state.startIndex);
+
+  //   // set search results
+  //   setSearchResults(response.items);
+  //   // set total items
+  //   setTotalItems(response.totalItems);
+  //   setLoading(false);
+  // }, [state]);
+
+  // //API calls for the next and prev buttons
+  // useEffect(() => {
+  //   //see line 7
+  //   if (isInitialMount.current) {
+  //     isInitialMount.current = false;
+  //   } else {
+  //     makeAQuery();
+  //   }
+  // }, [makeAQuery, state.startIndex]);
+
+  const changePage = (operand: any) => {
+    setLoading(true);
+    setStartIndex(Helpers.addOrSubtract(startIndex, operand));
+  };
+
+  const onSearch = async () => {
+    if (!isAdvancedSearch && titleTerm === "") {
+      setTitleErrors("Please enter a book title");
       if (titleInputRef.current) {
         titleInputRef.current.focus();
       }
       return;
     }
-    try {
-      api.get(`?q=${titleTerm}&maxResults=${maxResults}`).then((response) => {
-        console.log(response, "response here");
-        return response;
-      });
-    } catch (error) {
-      console.log(error);
+
+    if (
+      isAdvancedSearch &&
+      titleTerm === "" &&
+      authorTerm === "" &&
+      isbnTerm === "" &&
+      subjectTerm === "" &&
+      publisherTerm === ""
+    ) {
+      setOtherErrors("Please enter at least one search term");
+      if (titleInputRef.current) {
+        titleInputRef.current.focus();
+      }
+      return;
     }
+
+    setLoading(true);
+
+    const response = await Helpers.getList(Helpers.makeQuery(state), 0);
+    setSearchResults(response.items);
+    setTotalItems(response.totalItems);
+    setLoading(false);
   };
+
+  // const searchBooks = () => {
+
+  //   if (titleTerm === "") {
+  //     setTitleErrors([...titleErrors, "Please enter a book title"]);
+  //     if (titleInputRef.current) {
+  //       titleInputRef.current.focus();
+  //     }
+  //     return;
+  //   }
+  //   try {
+  //     api.get(`?q=${titleTerm}&maxResults=${maxResults}`).then((response) => {
+  //       console.log(response, "response here");
+  //       return response;
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <Container>
@@ -64,22 +156,23 @@ const Home: React.FC = () => {
             <SearchAreaWrapper>
               <div>
                 <InputField
-                  hasError={titleErrors.length > 0}
+                  hasError={!isAdvancedSearch && titleErrors.length > 0}
                   ref={titleInputRef}
                   placeholder={
                     isAdvancedSearch
-                      ? "Title"
+                      ? "Search Title"
                       : "Search for book E.g. Javascript"
                   }
                   value={titleTerm}
                   onChange={(e) => {
-                    setTitleErrors([]);
-                    setTitleTerm(e.target.value)
+                    setTitleErrors("");
+                    setOtherErrors("");
+                    setTitleTerm(e.target.value);
                   }}
                   type="string"
                   button={
                     !isAdvancedSearch ? (
-                      <RoundButton onClick={searchBooks}>
+                      <RoundButton onClick={onSearch}>
                         <BsArrowRight style={{ fontSize: 20 }} />
                       </RoundButton>
                     ) : null
@@ -87,39 +180,63 @@ const Home: React.FC = () => {
                 />
                 <div
                   style={{
-                    display: titleErrors.length > 0 ? "flex" : "none",
-                    flexDirection: "column",
+                    display: titleErrors.length > 0 ? "block" : "none",
                     padding: "10px 15px",
                   }}
                 >
-                  {titleErrors.length > 0 &&
-                    titleErrors.map((error, index) => {
-                      return <ErrorText key={index}>{error}</ErrorText>;
-                    })}
+                  {titleErrors.length > 0 && (
+                    <ErrorText>{titleErrors}</ErrorText>
+                  )}
                 </div>
               </div>
               {isAdvancedSearch ? (
                 <MoreOptionsWrap>
                   <InputField
-                    placeholder="Author"
+                    placeholder="Search Author"
                     value={authorTerm}
-                    onChange={(e) => setAuthorTerm(e.target.value)}
+                    onChange={(e) => {
+                      setOtherErrors("");
+                      setAuthorTerm(e.target.value)
+                    }}
                     type="string"
                   />
                   <InputField
-                    placeholder="Publisher"
+                    placeholder="Search Publisher"
                     value={publisherTerm}
-                    onChange={(e) => setPublisherTerm(e.target.value)}
+                    onChange={(e) => {
+                      setOtherErrors("");
+                      setPublisherTerm(e.target.value)
+                    }}
                     type="string"
                   />
                   <InputField
-                    placeholder="ISBN"
+                    placeholder="Search ISBN"
                     value={isbnTerm}
-                    onChange={(e) => setIsbnTerm(e.target.value)}
+                    onChange={(e) => {
+                      setOtherErrors("");
+                      setIsbnTerm(e.target.value)
+                    }}
+                    type="string"
+                  />
+                  <InputField
+                    placeholder="Search Subject"
+                    value={subjectTerm}
+                    onChange={(e) => {
+                      setOtherErrors("");
+                      setSubjectTerm(e.target.value)
+                    }}
                     type="string"
                   />
                 </MoreOptionsWrap>
               ) : null}
+              <div
+                style={{
+                  display: otherErrors.length > 0 ? "block" : "none",
+                  padding: "10px 15px",
+                }}
+              >
+                {otherErrors.length > 0 && <ErrorText>{otherErrors}</ErrorText>}
+              </div>
               <ControlsWrap
                 style={{
                   display: "flex",
@@ -128,14 +245,19 @@ const Home: React.FC = () => {
                 }}
               >
                 <SmallButton
-                  onClick={() => setIsAdvancedSearch(!isAdvancedSearch)}
+                  onClick={() => {
+                    setTitleErrors("");
+                    setIsAdvancedSearch(!isAdvancedSearch);
+                  }}
                 >
                   {isAdvancedSearch
                     ? "Switch to Simple Search"
                     : "Advanced Search"}
                 </SmallButton>
 
-                {isAdvancedSearch ? <Button>Search</Button> : null}
+                {isAdvancedSearch ? (
+                  <Button onClick={onSearch}>Search</Button>
+                ) : null}
               </ControlsWrap>
             </SearchAreaWrapper>
           </HeroLeft>
