@@ -98,45 +98,51 @@ const Home: React.FC = () => {
         </Hero>
       </HeroWrapper>
 
-      <div style={{width: "100%", display: "flex", justifyContent: "center" }}>
-      <SearchResultSection>
-        <BookItem
-          thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-          title="Rapid Money Making from Home"
-          author="Ben James"
-          pages={100}
-        />
-        <BookItem
-          thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-          title="Rapid Money Making from Home"
-          author="Ben James"
-          pages={100}
-        />
-        <BookItem
-          thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-          title="Rapid Money Making from Home"
-          author="Ben James"
-          pages={100}
-        />
-        <BookItem
-          thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-          title="Rapid Money Making from Home"
-          author="Ben James"
-          pages={100}
-        />
-        <BookItem
-          thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-          title="Rapid Money Making from Home"
-          author="Ben James"
-          pages={100}
-        />
-        <BookItem
-          thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-          title="Rapid Money Making from Home"
-          author="Ben James"
-          pages={100}
-        />
-      </SearchResultSection>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <SearchResultSection>
+          <BookItem
+            id="vnmnhsa89smnbds"
+            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            title="Rapid Money Making from Home"
+            author="Ben James"
+            pages={100}
+          />
+          <BookItem
+            id="vnmnhsa89smnbds"
+            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            title="Rapid Money Making from Home"
+            author="Ben James"
+            pages={100}
+          />
+          <BookItem
+            id="vnmnhsa89smnbds"
+            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            title="Rapid Money Making from Home"
+            author="Ben James"
+            pages={100}
+          />
+          <BookItem
+            id="vnmnhsa89smnbds"
+            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            title="Rapid Money Making from Home"
+            author="Ben James"
+            pages={100}
+          />
+          <BookItem
+            id="vnmnhsa89smnbds"
+            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            title="Rapid Money Making from Home"
+            author="Ben James"
+            pages={100}
+          />
+          <BookItem
+            id="vnmnhsa89smnbds"
+            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            title="Rapid Money Making from Home"
+            author="Ben James"
+            pages={100}
+          />
+        </SearchResultSection>
       </div>
     </Container>
   );
