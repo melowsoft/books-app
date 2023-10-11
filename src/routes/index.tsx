@@ -5,7 +5,7 @@ import BookDetail from '../pages/BookDetail';
 const Routes = () => (
   <Switch>
     <Route path="/" component={Home} exact />
-    <Route path="/book/:book" component={BookDetail} />
+    <Route path="/book/:id" component={BookDetail} />
   </Switch>
 );
 

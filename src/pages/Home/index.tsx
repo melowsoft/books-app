@@ -290,13 +290,17 @@ const Home: React.FC = () => {
             : null}
         </SearchResultSection>
       </div>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <PaginationComp
-          onChange={handlePageChange}
-          pageCount={totalPages}
-          currentPage={currentPage}
-        />
-      </div>
+      {searchResults.length > 0 && !loading && (
+        <div
+          style={{ width: "100%", display: "flex", justifyContent: "center" }}
+        >
+          <PaginationComp
+            onChange={handlePageChange}
+            pageCount={totalPages}
+            currentPage={currentPage}
+          />
+        </div>
+      )}
     </Container>
   );
 };

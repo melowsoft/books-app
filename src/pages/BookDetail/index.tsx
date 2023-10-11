@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BigThumbnail,
   Container,
@@ -8,28 +8,63 @@ import {
   ShowArea,
 } from "./styles";
 import { BsArrowLeft } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import Helpers from "../../api/helpers";
 
 const BookDetail = () => {
+  interface RouteParams {
+    id: string;
+  }
+
+  interface State {
+    volumeInfo: any;
+  }
+
+  const { id } = useParams<RouteParams>();
+  const [isMounted, setIsMounted] = React.useState(false);
+  const [state, setState] = React.useState<State>({ volumeInfo: null });
+
+  useEffect(() => {
+    setIsMounted(true); // Set the component as mounted when the effect runs
+
+    // Your code here...
+    if (isMounted) {
+      // Your code here...
+      (async () => {
+        const volumeInfo = await Helpers.getId(id);
+        setState((prevState) => ({
+          ...prevState,
+          volumeInfo,
+        }));
+      })();
+    }
+
+    return () => {
+      // This cleanup function runs when the component unmounts
+      setIsMounted(false); // Set the component as unmounted
+    };
+  }, [id, isMounted]);
+
   return (
-      <Container>
-          
-          <DetailContainer>
-          
-              <ShowArea>
-              <Link to="/">
-                      <div style={{ display: "flex", alignItems: "center" }}> <BsArrowLeft style={{ fontSize: 20, marginRight: 5 }} />Back</div>
-                    </Link>
+    <Container>
+      <DetailContainer>
+        <ShowArea>
+          <Link to="/">
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <BsArrowLeft style={{ fontSize: 20, marginRight: 5 }} />
+              Back
+            </div>
+          </Link>
           <BigThumbnail
-            src="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            src={state.volumeInfo?.imageLinks?.large}
             alt="big thumbnail"
           />
           <DetailsBox>
-            <h3>The Art of Money Making</h3>
+            <h3>{state?.volumeInfo?.title}</h3>
             <h4>
               <span>Authors: </span>
-              The Triumph and Tragedy of J. Robert Oppenheimer Kai Bird, Martin
-              J. Sherwin
+              {state?.volumeInfo?.authors?.join(",")}
             </h4>
 
             <InfoText>
@@ -38,22 +73,14 @@ const BookDetail = () => {
             </InfoText>
             <InfoText>
               {" "}
-              Publisher: <strong>Cliffs Notes</strong>
+              Publisher: <strong>{state?.volumeInfo?.publisher}</strong>
             </InfoText>
             <InfoText>
               {" "}
-              Pages: <strong>800</strong>
+              Pages: <strong>{state?.volumeInfo?.pageCount}</strong>
             </InfoText>
 
-            <p>
-              The classic novel about a daring experiment in human intelligence
-              Charlie Gordon, IQ 68, is a floor sweeper and the gentle butt of
-              everyone's jokes - until an experiment in the enhancement of human
-              intelligence turns him into a genius. But then Algernon, the mouse
-              whose triumphal experimental transformation preceded his, fades
-              and dies, and Charlie has to face the possibility that his
-              salvation was only temporary.
-            </p>
+            <p>{state?.volumeInfo?.description}</p>
           </DetailsBox>
         </ShowArea>
       </DetailContainer>

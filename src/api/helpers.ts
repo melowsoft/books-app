@@ -38,12 +38,8 @@ const Helpers = {
   getId: async (id: string) => {
     try {
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes/${id}`,
-        {
-          params: {
-            key: process.env.REACT_APP_API_KEY,
-          },
-        }
+        `https://www.googleapis.com/books/v1/volumes/${id}`
+        
       );
       return _.get(response, "data.volumeInfo");
     } catch (err) {
