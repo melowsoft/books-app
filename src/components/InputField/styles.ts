@@ -1,12 +1,14 @@
 import styled from "styled-components";
 
-export const InputWrapper = styled.div`
+export const InputWrapper = styled.div<{
+    isError?: boolean;
+  }>`
   position: relative;
-  border: 1px solid #302f2f;
+  border: ${(props) => (props.isError ? "1px solid #ff3333" : "1px solid #302f2f")}};
   border-radius: 30px;
   padding: 15px 20px;
   width: 100%;
-  background: none;
+  background: ${(props) => (props.isError ? "#ffedf0" : "none")};
 `;
 
 export const Input = styled.input`

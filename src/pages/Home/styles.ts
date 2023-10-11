@@ -41,12 +41,17 @@ export const RoundButton = styled.button`
   background-color: #0c0b22;
   color: #ffffff;
   position: absolute;
-  right: 5px;
-  bottom: 4px;
+  right: 4px;
+  bottom: 5px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  transition: transform 0.2s;
+  &:hover {
+    transform: scale(1.2);
+  }
 `;
 
 export const SearchAreaWrapper = styled.div`
@@ -57,6 +62,8 @@ export const SmallButton = styled.button`
   border: none;
   background: none;
   font-size: 14px;
+  color: #02537a;
+  font-weight: bold;
 `;
 
 export const ControlsWrap = styled.div`
@@ -82,3 +89,8 @@ border-top: 1px solid #302f2f;
   grid-row-gap: 30px;
   padding-top: 40px;
 `;
+
+export const ErrorText = styled.p`
+  font-size: 14px;
+  color: #fd671d;
+`

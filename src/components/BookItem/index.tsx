@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, DetailContainer, Thumbnail } from "./styles";
 import { Link } from "react-router-dom";
+import { InfoText } from "../../pages/BookDetail/styles";
 
 interface BookItemProps {
   id: string;
@@ -20,10 +21,10 @@ const BookItem = ({ id, title, author, thumbnail, pages }: BookItemProps) => {
         <Link key={id} to={`/book/${id}`}>
           <h3>{title}</h3>
         </Link>
-        <p style={{ marginTop: 5 }}>
-          <span style={{ fontSize: 12 }}>by:</span> {author}
-        </p>
-        <p style={{ fontSize: 12, marginTop: 5 }}>Pages: {pages}</p>
+        <InfoText>
+          By: <strong>{author}</strong>
+          </InfoText>
+          <InfoText>Pages: <strong>{pages}</strong></InfoText>
       </DetailContainer>
     </Container>
   );
