@@ -23,6 +23,8 @@ import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 import BookItem from "../../components/BookItem";
 import Helpers from "../../api/helpers";
+import ReactPaginate from "react-paginate";
+import { PaginationComp } from "../../components/PaginationComp";
 
 const Home: React.FC = () => {
   const isInitialMount = useRef(true);
@@ -32,14 +34,15 @@ const Home: React.FC = () => {
   const [authorTerm, setAuthorTerm] = React.useState<string>("");
   const [isbnTerm, setIsbnTerm] = React.useState<string>("");
   const [subjectTerm, setSubjectTerm] = React.useState<string>("");
-  //const [maxResults, setMaxResults] = React.useState<number>(10);
+  const [maxResults, setMaxResults] = React.useState<number>(10);
   const [publisherTerm, setPublisherTerm] = React.useState<string>("");
   const [titleErrors, setTitleErrors] = React.useState<string>("");
   const [otherErrors, setOtherErrors] = React.useState<string>("");
-  const [startIndex, setStartIndex] = React.useState<number>(0);
   const [totalItems, setTotalItems] = React.useState<number>(0);
   const [searchResults, setSearchResults] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [currentPage, setCurrentPage] = React.useState<number>(0);
+  const [totalPages, setTotalPages] = React.useState<number>(0);
 
   const titleInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -51,7 +54,8 @@ const Home: React.FC = () => {
       inpublisherTerm: publisherTerm,
       inpublisher: publisherTerm,
       insubject: subjectTerm,
-      startIndex,
+      startIndex: currentPage,
+      maxResults,
       totalItems,
       searchResults,
       loading,
@@ -60,72 +64,75 @@ const Home: React.FC = () => {
       authorTerm,
       isbnTerm,
       loading,
+      maxResults,
       publisherTerm,
       searchResults,
-      startIndex,
+      currentPage,
       subjectTerm,
       titleTerm,
       totalItems,
     ]
   );
 
-  // const makeAQuery = React.useCallback(async () => {
-  //   const query = Helpers.makeQuery(state);
-  //   const response = await Helpers.getList(query, state.startIndex);
-
-  //   // set search results
-  //   setSearchResults(response.items);
-  //   // set total items
-  //   setTotalItems(response.totalItems);
-  //   setLoading(false);
-  // }, [state]);
-
-  // //API calls for the next and prev buttons
-  // useEffect(() => {
-  //   //see line 7
-  //   if (isInitialMount.current) {
-  //     isInitialMount.current = false;
-  //   } else {
-  //     makeAQuery();
-  //   }
-  // }, [makeAQuery, state.startIndex]);
-
-  const changePage = (operand: any) => {
-    setLoading(true);
-    setStartIndex(Helpers.addOrSubtract(startIndex, operand));
-  };
-
-  const onSearch = async () => {
-    if (!isAdvancedSearch && titleTerm === "") {
-      setTitleErrors("Please enter a book title");
-      if (titleInputRef.current) {
-        titleInputRef.current.focus();
+  const onSearch = React.useCallback(
+    async (currentPage: number) => {
+      if (!isAdvancedSearch && titleTerm === "") {
+        setTitleErrors("Please enter a book title");
+        if (titleInputRef.current) {
+          titleInputRef.current.focus();
+        }
+        return;
       }
-      return;
-    }
 
-    if (
-      isAdvancedSearch &&
-      titleTerm === "" &&
-      authorTerm === "" &&
-      isbnTerm === "" &&
-      subjectTerm === "" &&
-      publisherTerm === ""
-    ) {
-      setOtherErrors("Please enter at least one search term");
-      if (titleInputRef.current) {
-        titleInputRef.current.focus();
+      if (
+        isAdvancedSearch &&
+        titleTerm === "" &&
+        authorTerm === "" &&
+        isbnTerm === "" &&
+        subjectTerm === "" &&
+        publisherTerm === ""
+      ) {
+        setOtherErrors("Please enter at least one search term");
+        if (titleInputRef.current) {
+          titleInputRef.current.focus();
+        }
+        return;
       }
-      return;
-    }
 
-    setLoading(true);
+      setLoading(true);
 
-    const response = await Helpers.getList(Helpers.makeQuery(state), 0);
-    setSearchResults(response.items);
-    setTotalItems(response.totalItems);
-    setLoading(false);
-  };
+      const response = await Helpers.getList(
+        Helpers.makeQuery(state),
+        currentPage,
+        maxResults
+      );
+      setSearchResults(response.items);
+      setTotalItems(response.totalItems);
+      setLoading(false);
+    },
+    [
+      authorTerm,
+      isAdvancedSearch,
+      isbnTerm,
+      maxResults,
+      publisherTerm,
+      state,
+      subjectTerm,
+      titleTerm,
+    ]
+  );
+
+  const handlePageChange = React.useCallback(
+    (selectedPage: any) => {
+      setCurrentPage(selectedPage.selected);
+      onSearch(selectedPage.selected);
+    },
+    [onSearch]
+  );
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(totalItems / maxResults));
+  }, [maxResults, totalItems]);
 
   // const searchBooks = () => {
 
@@ -172,7 +179,7 @@ const Home: React.FC = () => {
                   type="string"
                   button={
                     !isAdvancedSearch ? (
-                      <RoundButton onClick={onSearch}>
+                      <RoundButton onClick={() => onSearch(currentPage)}>
                         <BsArrowRight style={{ fontSize: 20 }} />
                       </RoundButton>
                     ) : null
@@ -196,7 +203,7 @@ const Home: React.FC = () => {
                     value={authorTerm}
                     onChange={(e) => {
                       setOtherErrors("");
-                      setAuthorTerm(e.target.value)
+                      setAuthorTerm(e.target.value);
                     }}
                     type="string"
                   />
@@ -205,7 +212,7 @@ const Home: React.FC = () => {
                     value={publisherTerm}
                     onChange={(e) => {
                       setOtherErrors("");
-                      setPublisherTerm(e.target.value)
+                      setPublisherTerm(e.target.value);
                     }}
                     type="string"
                   />
@@ -214,7 +221,7 @@ const Home: React.FC = () => {
                     value={isbnTerm}
                     onChange={(e) => {
                       setOtherErrors("");
-                      setIsbnTerm(e.target.value)
+                      setIsbnTerm(e.target.value);
                     }}
                     type="string"
                   />
@@ -223,7 +230,7 @@ const Home: React.FC = () => {
                     value={subjectTerm}
                     onChange={(e) => {
                       setOtherErrors("");
-                      setSubjectTerm(e.target.value)
+                      setSubjectTerm(e.target.value);
                     }}
                     type="string"
                   />
@@ -256,7 +263,7 @@ const Home: React.FC = () => {
                 </SmallButton>
 
                 {isAdvancedSearch ? (
-                  <Button onClick={onSearch}>Search</Button>
+                  <Button onClick={() => onSearch(currentPage)}>Search</Button>
                 ) : null}
               </ControlsWrap>
             </SearchAreaWrapper>
@@ -269,49 +276,26 @@ const Home: React.FC = () => {
 
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <SearchResultSection>
-          <BookItem
-            id="vnmnhsa89smnbds"
-            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-            title="Rapid Money Making from Home"
-            author="Ben James"
-            pages={100}
-          />
-          <BookItem
-            id="vnmnhsa89smnbds"
-            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-            title="Rapid Money Making from Home"
-            author="Ben James"
-            pages={100}
-          />
-          <BookItem
-            id="vnmnhsa89smnbds"
-            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-            title="Rapid Money Making from Home"
-            author="Ben James"
-            pages={100}
-          />
-          <BookItem
-            id="vnmnhsa89smnbds"
-            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-            title="Rapid Money Making from Home"
-            author="Ben James"
-            pages={100}
-          />
-          <BookItem
-            id="vnmnhsa89smnbds"
-            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-            title="Rapid Money Making from Home"
-            author="Ben James"
-            pages={100}
-          />
-          <BookItem
-            id="vnmnhsa89smnbds"
-            thumbnail="http://books.google.com/books/content?id=RCoHzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-            title="Rapid Money Making from Home"
-            author="Ben James"
-            pages={100}
-          />
+          {searchResults.length > 0 && !loading
+            ? searchResults.map((book) => (
+                <BookItem
+                  key={book.id}
+                  id={book.id}
+                  thumbnail={book?.volumeInfo?.imageLinks?.smallThumbnail}
+                  title={book.volumeInfo.title}
+                  author={book.volumeInfo.authors[0]}
+                  pages={book.volumeInfo.pageCount}
+                />
+              ))
+            : null}
         </SearchResultSection>
+      </div>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <PaginationComp
+          onChange={handlePageChange}
+          pageCount={totalPages}
+          currentPage={currentPage}
+        />
       </div>
     </Container>
   );

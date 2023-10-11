@@ -29,5 +29,47 @@ body {
   button {
     cursor: pointer;
   }
+
+  .pagination {
+  width: 80%;
+  height: 40px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  overflow-x: scroll;
+  padding: 0;
+}
+
+.pagination a {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: Open Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #697488;
+  border-radius: 2px;
+  
+}
+
+
+.page-active a{
+  background: #02537a;
+  color: #FFFFFF;
+}
+
+.next-page path:hover {
+  fill: #1EA4CE;
+}
+.prev-page path:hover {
+  fill: #1EA4CE;
+}
+
 }
 `;
