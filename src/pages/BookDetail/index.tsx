@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import {
   BigThumbnail,
@@ -14,41 +14,66 @@ import { Link, useParams } from "react-router-dom";
 import Helpers from "../../api/helpers";
 import BookDetailLoader from "../../components/BookDetailLoader";
 
-const BookDetail = () => {
-  interface RouteParams {
+interface RouteParams {
     id: string;
   }
-
-  interface State {
-    volumeInfo: any;
+  
+  interface VolumeInfo {
+    title: string;
+    authors: string[];
+    publishedDate: string;
+    publisher: string;
+    pageCount: number;
+    description: string;
+    imageLinks: {
+      large: string;
+    };
   }
+  
 
-  const { id } = useParams<RouteParams>();
-    const [state, setState] = React.useState<State>({ volumeInfo: null });
-    const [isLoading, setIsLoading] = React.useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
+const BookDetail = () => {
+    const { id } = useParams<RouteParams>();
+    const [state, setState] = useState<{ volumeInfo: VolumeInfo | null }>({
+      volumeInfo: null,
+    });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+  
+    useEffect(() => {
+      let isMounted = true;
   
       (async () => {
-       setIsLoading(true); 
-      const volumeInfo = await Helpers.getId(id);
-      if (isMounted) {
-        setState((prevState) => ({
-          ...prevState,
-          volumeInfo,
-        }));
-        setIsLoading(false);  
-      }
-    })();
+        setIsLoading(true);
   
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
-
-   if (isLoading) {
-        return <BookDetailLoader />
+        try {
+          const volumeInfo: VolumeInfo = await Helpers.getId(id);
+  
+          if (isMounted) {
+            setState((prevState) => ({
+              ...prevState,
+              volumeInfo,
+            }));
+          }
+        } catch (err) {
+          setError(err as Error);
+        } finally {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        }
+      })();
+  
+      return () => {
+        isMounted = false;
+      };
+    }, [id]);
+  
+    if (isLoading) {
+      return <BookDetailLoader />;
+    }
+  
+    if (error) {
+      return <div>Error: {error.message}</div>;
     }
 
   return (

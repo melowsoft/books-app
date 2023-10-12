@@ -17,7 +17,7 @@ const BookItem = ({ id, title, author, thumbnail, pages }: BookItemProps) => {
       <Link key={id} to={`/book/${id}`}>
               {
                     thumbnail ? (
-                        <Thumbnail src={thumbnail} alt="book thumbnail" />
+                        <Thumbnail src={thumbnail} alt={title} />
                     ) : <SmallImagePlaceholder>No Image </SmallImagePlaceholder>
        }
       </Link>

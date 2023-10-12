@@ -174,6 +174,7 @@ const Home: React.FC = () => {
             <SearchAreaWrapper>
               <div>
                 <InputField
+                  name="title"
                   hasError={!isAdvancedSearch && titleErrors.length > 0}
                   ref={titleInputRef}
                   placeholder={
@@ -190,7 +191,7 @@ const Home: React.FC = () => {
                   type="string"
                   button={
                     !isAdvancedSearch ? (
-                      <RoundButton onClick={() => onSearch(currentPage)}>
+                      <RoundButton aria-label="Simple search button" onClick={() => onSearch(currentPage)}>
                         <BsArrowRight style={{ fontSize: 20 }} />
                       </RoundButton>
                     ) : null
@@ -300,6 +301,7 @@ const Home: React.FC = () => {
               ))
             : null}
           {loading && Array.from(Array(9).keys()).map((i) => <BookLoader key={i} />)}
+          {loading && <div style={{display: "hidden"}}>Loading books...</div>}
         </SearchResultSection>
       </div>
      

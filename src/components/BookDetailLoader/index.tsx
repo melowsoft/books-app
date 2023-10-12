@@ -14,6 +14,7 @@ const BookDetailLoader = () => {
 
   return (
     <Container>
+      <div aria-label="Loading..." style={{display: "hidden"}}></div>
       <DetailContainer>
         <ShowArea>
          
