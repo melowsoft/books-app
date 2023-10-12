@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, LeftBox, LogoWrap, RightBox, BorderBox } from "./styles";
 import { Link } from "react-router-dom";
-import { FiSearch } from "react-icons/fi";
 import NavButton from "../NavButton";
 import LOGOIMG from "../../assets/logo.png";
 import Button from "../Button";

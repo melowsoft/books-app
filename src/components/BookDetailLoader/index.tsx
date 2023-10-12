@@ -11,7 +11,7 @@ import { BsArrowLeft } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import Helpers from "../../api/helpers";
 
-const BookDetail = () => {
+const BookDetailLoader = () => {
   interface RouteParams {
     id: string;
   }
@@ -86,4 +86,4 @@ const BookDetail = () => {
   );
 };
 
-export default BookDetail;
+export default BookDetailLoader;

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
+
 import {
   Container,
   Hero,
@@ -22,76 +23,82 @@ import { BsArrowRight } from "react-icons/bs";
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 import BookItem from "../../components/BookItem";
-import Helpers from "../../api/helpers";
-import ReactPaginate from "react-paginate";
 import { PaginationComp } from "../../components/PaginationComp";
+import { useSearch } from "../../context/SearchContext";
+import { usePagination } from "../../hooks/usePagination";
+import { useErrorHandling } from "../../hooks/useErrorHandling";
+import { ButtonText } from "../../constants";
+import { useInput } from "../../context/InputsContext";
+import BookLoader from "../../components/BookLoader";
 
 const Home: React.FC = () => {
-  const isInitialMount = useRef(true);
-  const [isAdvancedSearch, setIsAdvancedSearch] =
-    React.useState<boolean>(false);
-  const [titleTerm, setTitleTerm] = React.useState<string>("");
-  const [authorTerm, setAuthorTerm] = React.useState<string>("");
-  const [isbnTerm, setIsbnTerm] = React.useState<string>("");
-  const [subjectTerm, setSubjectTerm] = React.useState<string>("");
-  const [maxResults, setMaxResults] = React.useState<number>(10);
-  const [publisherTerm, setPublisherTerm] = React.useState<string>("");
-  const [titleErrors, setTitleErrors] = React.useState<string>("");
-  const [otherErrors, setOtherErrors] = React.useState<string>("");
-  const [totalItems, setTotalItems] = React.useState<number>(0);
-  const [searchResults, setSearchResults] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [currentPage, setCurrentPage] = React.useState<number>(0);
-  const [totalPages, setTotalPages] = React.useState<number>(0);
+  const { searchResults, loading, maxResults, performSearch, totalItems } =
+    useSearch();
+  const {
+    titleTerm,
+    setTitleTerm,
+    authorTerm,
+    setAuthorTerm,
+    isbnTerm,
+    setIsbnTerm,
+    subjectTerm,
+    setSubjectTerm,
+    publisherTerm,
+    setPublisherTerm,
+    isAdvancedSearch,
+    setIsAdvancedSearch,
+  } = useInput();
+  const { currentPage, totalPages, setCurrentPage } = usePagination(
+    totalItems,
+    maxResults
+  );
+  const { titleErrors, setTitleErrors, otherErrors, setOtherErrors } =
+    useErrorHandling();
+
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   const titleInputRef = useRef<HTMLInputElement | null>(null);
 
-  const state = React.useMemo(
-    () => ({
-      intitle: titleTerm,
-      inauthor: authorTerm,
-      isbn: isbnTerm,
-      inpublisherTerm: publisherTerm,
-      inpublisher: publisherTerm,
-      insubject: subjectTerm,
-      startIndex: currentPage,
-      maxResults,
-      totalItems,
-      searchResults,
-      loading,
-    }),
-    [
-      authorTerm,
-      isbnTerm,
-      loading,
-      maxResults,
-      publisherTerm,
-      searchResults,
-      currentPage,
-      subjectTerm,
-      titleTerm,
-      totalItems,
-    ]
-  );
+  const isTitleValid = useCallback(() => {
+    if (titleTerm === "") {
+      setTitleErrors("Please enter a book title");
+      if (titleInputRef.current) {
+        titleInputRef.current.focus();
+      }
+      return false;
+    }
+    return true;
+  }, [setTitleErrors, titleTerm]);
 
-  const onSearch = React.useCallback(
+  const hasAdvancedSearchTerms = useCallback(() => {
+    if (
+      !titleTerm &&
+      !authorTerm &&
+      !isbnTerm &&
+      !publisherTerm &&
+      !subjectTerm
+    ) {
+      setOtherErrors("Please enter at least one search term");
+      return false;
+    } else {
+      return true;
+    }
+  }, [
+    authorTerm,
+    isbnTerm,
+    publisherTerm,
+    setOtherErrors,
+    subjectTerm,
+    titleTerm,
+  ]);
+
+  const onSearch = useCallback(
     async (currentPage: number) => {
-      if (!isAdvancedSearch && titleTerm === "") {
-        setTitleErrors("Please enter a book title");
-        if (titleInputRef.current) {
-          titleInputRef.current.focus();
-        }
+      if (!isAdvancedSearch && !isTitleValid()) {
         return;
       }
 
-      if (
-        isAdvancedSearch &&
-        titleTerm === "" &&
-        authorTerm === "" &&
-        isbnTerm === "" &&
-        subjectTerm === "" &&
-        publisherTerm === ""
-      ) {
+      if (isAdvancedSearch && !hasAdvancedSearchTerms()) {
         setOtherErrors("Please enter at least one search term");
         if (titleInputRef.current) {
           titleInputRef.current.focus();
@@ -99,59 +106,63 @@ const Home: React.FC = () => {
         return;
       }
 
-      setLoading(true);
+      const state = {
+        intitle: titleTerm,
+        inauthor: authorTerm,
+        isbn: isbnTerm,
+        inpublisherTerm: publisherTerm,
+        inpublisher: publisherTerm,
+        insubject: subjectTerm,
+        startIndex: currentPage,
+        maxResults,
+        totalItems,
+        searchResults,
+        loading,
+      };
 
-      const response = await Helpers.getList(
-        Helpers.makeQuery(state),
-        currentPage,
-        maxResults
-      );
-      setSearchResults(response.items);
-      setTotalItems(response.totalItems);
-      setLoading(false);
+      performSearch(state, currentPage);
     },
     [
-      authorTerm,
       isAdvancedSearch,
-      isbnTerm,
-      maxResults,
-      publisherTerm,
-      state,
-      subjectTerm,
+      isTitleValid,
+      hasAdvancedSearchTerms,
       titleTerm,
+      authorTerm,
+      isbnTerm,
+      publisherTerm,
+      subjectTerm,
+      maxResults,
+      totalItems,
+      searchResults,
+      loading,
+      performSearch,
+      setOtherErrors,
     ]
   );
 
-  const handlePageChange = React.useCallback(
+  const handlePageChange = useCallback(
     (selectedPage: any) => {
       setCurrentPage(selectedPage.selected);
       onSearch(selectedPage.selected);
     },
-    [onSearch]
+    [onSearch, setCurrentPage]
   );
 
   useEffect(() => {
-    setTotalPages(Math.ceil(totalItems / maxResults));
-  }, [maxResults, totalItems]);
+    setIsMounted(true);
 
-  // const searchBooks = () => {
+    if (isMounted) {
+      setTitleErrors("");
+      setOtherErrors("");
+    }
+    if (isMounted && isAdvancedSearch) {
+      setOtherErrors("");
+    }
 
-  //   if (titleTerm === "") {
-  //     setTitleErrors([...titleErrors, "Please enter a book title"]);
-  //     if (titleInputRef.current) {
-  //       titleInputRef.current.focus();
-  //     }
-  //     return;
-  //   }
-  //   try {
-  //     api.get(`?q=${titleTerm}&maxResults=${maxResults}`).then((response) => {
-  //       console.log(response, "response here");
-  //       return response;
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    return () => {
+      setIsMounted(false);
+    };
+  }, [isMounted, setOtherErrors, setTitleErrors, isAdvancedSearch]);
 
   return (
     <Container>
@@ -258,8 +269,8 @@ const Home: React.FC = () => {
                   }}
                 >
                   {isAdvancedSearch
-                    ? "Switch to Simple Search"
-                    : "Advanced Search"}
+                    ? ButtonText.SIMPLE_SEARCH
+                    : ButtonText.ADVANCED_SEARCH}
                 </SmallButton>
 
                 {isAdvancedSearch ? (
@@ -288,8 +299,10 @@ const Home: React.FC = () => {
                 />
               ))
             : null}
+          {loading && Array.from(Array(9).keys()).map((i) => <BookLoader />)}
         </SearchResultSection>
       </div>
+     
       {searchResults.length > 0 && !loading && (
         <div
           style={{ width: "100%", display: "flex", justifyContent: "center" }}
