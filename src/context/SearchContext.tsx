@@ -1,9 +1,9 @@
-// SearchContext.tsx
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import Helpers from "../api/helpers";
+import { IBook } from "../interface";
 
 interface SearchState {
-  searchResults: any[];
+  searchResults: IBook[];
   loading: boolean;
   totalItems: number;
   maxResults: number;

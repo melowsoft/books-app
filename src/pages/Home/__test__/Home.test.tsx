@@ -57,7 +57,6 @@ describe("Book tests", () => {
         });
         fireEvent.click(advancedSearchToggleButton);
 
-        // After clicking the "Advanced Search" button, ensure the additional input fields are visible
         const authorInput = info.getByPlaceholderText("Search Author");
         const publisherInput = info.getByPlaceholderText("Search Publisher");
         const isbnInput = info.getByPlaceholderText("Search ISBN");
@@ -86,7 +85,7 @@ describe("Book tests", () => {
 
           fireEvent.change(simpleSearchInput, { target: { value: "React" } });
 
-          // Add assertions for search results, e.g., checking if search results are displayed
+          // Add assertions for search results, 
           // and if the results match the search criteria
           // You can use screen queries to access elements in the search results section
         });
@@ -108,7 +107,6 @@ describe("Book tests", () => {
         });
         fireEvent.click(advancedSearchToggleButton);
 
-        // After clicking the "Advanced Search" button, ensure the input fields are visible
         const authorInput = info.getByPlaceholderText("Search Author");
         const publisherInput = info.getByPlaceholderText("Search Publisher");
         const isbnInput = info.getByPlaceholderText("Search ISBN");
@@ -119,13 +117,11 @@ describe("Book tests", () => {
         expect(isbnInput).toBeInTheDocument();
         expect(subjectInput).toBeInTheDocument();
 
-        // Click the "Simple Search" button
         const simpleSearchToggleButton = info.queryByRole("button", {
           name: "Switch to Simple Search",
         });
         fireEvent.click(simpleSearchToggleButton);
 
-        // Ensure the input fields are no longer visible
         expect(info.queryByPlaceholderText("Search Author")).toBeNull();
         expect(info.queryByPlaceholderText("Search Publisher")).toBeNull();
         expect(info.queryByPlaceholderText("Search ISBN")).toBeNull();

@@ -32,7 +32,7 @@ describe('Button component', () => {
     render(<Button>Default Button</Button>);
     const buttonElement = screen.getByText('Default Button');
     
-    // Ensure that there are no inline styles applied
+
     expect(buttonElement).not.toHaveStyle('background-color: blue');
     expect(buttonElement).not.toHaveStyle('color: white');
   });

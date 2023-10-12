@@ -19,12 +19,10 @@ describe("BookItem component", () => {
       </BrowserRouter>
     );
 
-    // Check if title, author, and pages are displayed
     expect(screen.getByText(/Sample Book/i)).toBeInTheDocument();
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(screen.getByText(/200/i)).toBeInTheDocument();
 
-    // Check if thumbnail is displayed
     expect(screen.getByAltText(/Sample Book/i)).toBeInTheDocument();
   });
 
@@ -37,10 +35,8 @@ describe("BookItem component", () => {
       </BrowserRouter>
     );
 
-    // Check if placeholder text is displayed
     expect(screen.getByText("No Image")).toBeInTheDocument();
 
-    // Check if thumbnail is not displayed
     expect(screen.queryByAltText("book thumbnail")).toBeNull();
   });
 
@@ -50,15 +46,11 @@ describe("BookItem component", () => {
           <BookItem {...bookData} />
         </BrowserRouter>
       );
-      
+
     const link = screen.getByText("Sample Book");
 
-    // Simulate a click on the link
     fireEvent.click(link);
 
-    // Check if the correct URL is navigated
     expect(window.location.pathname).toBe("/book/1");
   });
-
-  // Add more test cases for different combinations of props and scenarios
 });

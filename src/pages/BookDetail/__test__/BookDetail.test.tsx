@@ -6,11 +6,10 @@ import {
 import { MemoryRouter, Route } from "react-router-dom";
 import BookDetail from "..";
 
-// Mock the react-router-dom module
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useParams: () => ({
-    id: "123", // Replace with the desired book ID for testing
+    id: "123", 
   }),
 }));
 
@@ -24,7 +23,6 @@ describe("BookDetail Component", () => {
       </MemoryRouter>
     );
 
-    // Check that the loading state is displayed
     expect(screen.getByLabelText("Loading...")).toBeInTheDocument();
   });
 
@@ -37,7 +35,6 @@ describe("BookDetail Component", () => {
       </MemoryRouter>
     );
 
-    // Check that the loading state is displayed
     expect(screen.getByLabelText("Loading...")).toBeInTheDocument();
   });
   
