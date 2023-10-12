@@ -7,7 +7,7 @@ describe("BookItem component", () => {
   const bookData = {
     id: "1",
     title: "Sample Book",
-    author: "John Doe",
+    authors: ["John Doe"],
     thumbnail: "sample.jpg",
     pages: 200,
   };
@@ -41,11 +41,11 @@ describe("BookItem component", () => {
   });
 
   it("should navigate to the correct book detail page", () => {
-      render(
-        <BrowserRouter>
-          <BookItem {...bookData} />
-        </BrowserRouter>
-      );
+    render(
+      <BrowserRouter>
+        <BookItem {...bookData} />
+      </BrowserRouter>
+    );
 
     const link = screen.getByText("Sample Book");
 

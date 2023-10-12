@@ -11,12 +11,12 @@ import { InfoText } from "../../pages/BookDetail/styles";
 interface BookItemProps {
   id: string;
   title: string;
-  author: string;
+  authors: string[];
   thumbnail: string;
   pages: number;
 }
 
-const BookItem = ({ id, title, author, thumbnail, pages }: BookItemProps) => {
+const BookItem = ({ id, title, authors, thumbnail, pages }: BookItemProps) => {
   return (
     <Container>
       <Link key={id} to={`/book/${id}`}>
@@ -31,7 +31,7 @@ const BookItem = ({ id, title, author, thumbnail, pages }: BookItemProps) => {
           <h3>{title}</h3>
         </Link>
         <InfoText>
-          By: <strong>{author}</strong>
+          By: <strong>{authors?.join(",")}</strong>
         </InfoText>
         <InfoText>
           Pages: <strong>{pages}</strong>

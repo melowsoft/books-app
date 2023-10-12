@@ -295,7 +295,7 @@ const Home: React.FC = () => {
                   id={book.id}
                   thumbnail={book?.volumeInfo?.imageLinks?.smallThumbnail}
                   title={book.volumeInfo.title}
-                  author={book.volumeInfo.authors[0]}
+                  authors={book?.volumeInfo?.authors}
                   pages={book.volumeInfo.pageCount}
                 />
               ))

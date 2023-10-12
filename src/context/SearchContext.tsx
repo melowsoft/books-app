@@ -24,7 +24,8 @@ export function SearchProvider({ children }: SearchProviderProps) {
 
   const performSearch = useCallback(async (state: any, currentPage: number) => {
     setLoading(true);
-    const response = await Helpers.getList(state, currentPage, maxResults);
+    const query = Helpers.makeQuery(state)
+    const response = await Helpers.getList(query, currentPage, maxResults);
     setSearchResults(response.items);
     setTotalItems(response.totalItems);
     setLoading(false);

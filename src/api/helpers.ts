@@ -3,10 +3,12 @@ import _ from "lodash";
 
 const Helpers = {
   //returns a list of books from the api
-  getList: async (query: any, startIndex: number, maxResults: number) => {
+    getList: async (query: any, startIndex: number, maxResults: number) => {
+        console.log(query, "query")
     try {
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${maxResults}`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${maxResults}`,
+       
       );
       return response.data;
     } catch (err) {
@@ -38,8 +40,7 @@ const Helpers = {
   getId: async (id: string) => {
     try {
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes/${id}`
-        
+        `https://www.googleapis.com/books/v1/volumes/${id}`,
       );
       return _.get(response, "data.volumeInfo");
     } catch (err) {
