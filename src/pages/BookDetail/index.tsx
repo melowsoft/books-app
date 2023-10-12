@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
+import { format } from "date-fns";
 import {
   BigThumbnail,
   Container,
   DetailContainer,
   DetailsBox,
+  ImagePlaceholder,
   InfoText,
   ShowArea,
 } from "./styles";
 import { BsArrowLeft } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import Helpers from "../../api/helpers";
+import BookDetailLoader from "../../components/BookDetailLoader";
 
 const BookDetail = () => {
   interface RouteParams {
@@ -21,43 +24,57 @@ const BookDetail = () => {
   }
 
   const { id } = useParams<RouteParams>();
-  const [isMounted, setIsMounted] = React.useState(false);
-  const [state, setState] = React.useState<State>({ volumeInfo: null });
+    const [state, setState] = React.useState<State>({ volumeInfo: null });
+    const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-
-    
-    if (isMounted) {
+    let isMounted = true;
+  
       (async () => {
-        const volumeInfo = await Helpers.getId(id);
+       setIsLoading(true); 
+      const volumeInfo = await Helpers.getId(id);
+      if (isMounted) {
         setState((prevState) => ({
           ...prevState,
           volumeInfo,
         }));
-      })();
-    }
-
+        setIsLoading(false);  
+      }
+    })();
+  
     return () => {
-      setIsMounted(false);
+      isMounted = false;
     };
-  }, [id, isMounted]);
+  }, [id]);
+
+   if (isLoading) {
+        return <BookDetailLoader />
+    }
 
   return (
     <Container>
       <DetailContainer>
         <ShowArea>
           <Link to="/">
-            <div style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontWeight: "bold",
+              }}
+            >
               {" "}
               <BsArrowLeft style={{ fontSize: 20, marginRight: 5 }} />
-             Go Back to Search Results
+              Go Back to Search Results
             </div>
-          </Link>
-          <BigThumbnail
-            src={state.volumeInfo?.imageLinks?.large}
-            alt="big thumbnail"
-          />
+                  </Link>
+                  {
+                      state.volumeInfo?.imageLinks?.large ? ( <BigThumbnail
+                        src={state.volumeInfo?.imageLinks?.large}
+                        alt="big thumbnail"
+                      />) : <ImagePlaceholder>No Image Thumbnail</ImagePlaceholder>
+                  }
+         
           <DetailsBox>
             <h3>{state?.volumeInfo?.title}</h3>
             <h4>
@@ -67,7 +84,11 @@ const BookDetail = () => {
 
             <InfoText>
               {" "}
-              Published: <strong>2005</strong>
+              Published:{" "}
+              <strong>
+                {state?.volumeInfo?.publishedDate &&
+                  format(new Date(state?.volumeInfo?.publishedDate), "yyyy")}
+              </strong>
             </InfoText>
             <InfoText>
               {" "}

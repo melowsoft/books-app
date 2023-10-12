@@ -24,3 +24,15 @@ export const DetailContainer = styled.div`
     }
   }
 `;
+
+export const SmallImagePlaceholder = styled.div`
+    width: 150px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid grey;
+    margin-top: 30px;
+    text-decoration: none;
+   
+`

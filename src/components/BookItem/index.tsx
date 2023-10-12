@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, DetailContainer, Thumbnail } from "./styles";
+import { Container, DetailContainer, SmallImagePlaceholder, Thumbnail } from "./styles";
 import { Link } from "react-router-dom";
 import { InfoText } from "../../pages/BookDetail/styles";
 
@@ -15,7 +15,11 @@ const BookItem = ({ id, title, author, thumbnail, pages }: BookItemProps) => {
   return (
     <Container>
       <Link key={id} to={`/book/${id}`}>
-        <Thumbnail src={thumbnail} alt="thumbnail" />
+              {
+                    thumbnail ? (
+                        <Thumbnail src={thumbnail} alt="book thumbnail" />
+                    ) : <SmallImagePlaceholder>No Image </SmallImagePlaceholder>
+       }
       </Link>
       <DetailContainer>
         <Link key={id} to={`/book/${id}`}>

@@ -58,3 +58,12 @@ font-size: 12px;
 margin-top: 10px;
 
 `
+export const ImagePlaceholder = styled.div`
+    width: 250px;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid grey;
+    margin-top: 30px;
+`

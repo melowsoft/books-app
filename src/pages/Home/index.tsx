@@ -299,7 +299,7 @@ const Home: React.FC = () => {
                 />
               ))
             : null}
-          {loading && Array.from(Array(9).keys()).map((i) => <BookLoader />)}
+          {loading && Array.from(Array(9).keys()).map((i) => <BookLoader key={i} />)}
         </SearchResultSection>
       </div>
      
