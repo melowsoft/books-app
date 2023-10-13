@@ -69,7 +69,10 @@ const BookDetail = () => {
     }, [id]);
   
     if (isLoading) {
-      return <BookDetailLoader />;
+      return <div>
+        <div style={{position: "absolute", left: "-1000px"}}>Loading...</div>
+        <BookDetailLoader />
+      </div>;
     }
   
     if (error) {
