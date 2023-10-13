@@ -13,9 +13,8 @@ const BookDetailLoader = () => {
 
 
   return (
-    <Container>
-      <div aria-label="Loading..." style={{display: "hidden"}}></div>
-      <DetailContainer>
+    <Container aria-label="Loading...">
+      <DetailContainer >
         <ShowArea>
          
           <Skeleton width={"250px"} height="350px"/>

@@ -32,8 +32,14 @@ import { useInput } from "../../context/InputsContext";
 import BookLoader from "../../components/BookLoader";
 
 const Home: React.FC = () => {
-  const { searchResults, loading, maxResults, performSearch, totalItems } =
-    useSearch();
+  const {
+    searchResults,
+    loading,
+    maxResults,
+    performSearch,
+    totalItems,
+    apiErrors,
+  } = useSearch();
   const {
     titleTerm,
     setTitleTerm,
@@ -191,7 +197,10 @@ const Home: React.FC = () => {
                   type="string"
                   button={
                     !isAdvancedSearch ? (
-                      <RoundButton aria-label="Simple search button" onClick={() => onSearch(currentPage)}>
+                      <RoundButton
+                        aria-label="Simple search button"
+                        onClick={() => onSearch(currentPage)}
+                      >
                         <BsArrowRight style={{ fontSize: 20 }} />
                       </RoundButton>
                     ) : null
@@ -300,11 +309,15 @@ const Home: React.FC = () => {
                 />
               ))
             : null}
-          {loading && Array.from(Array(9).keys()).map((i) => <BookLoader key={i} />)}
-          {loading && <div style={{display: "hidden"}}>Loading books...</div>}
+          {loading &&
+            Array.from(Array(9).keys()).map((i) => <BookLoader key={i} />)}
+          {loading && <div style={{ display: "hidden" }}>Loading books...</div>}
+          {apiErrors?.message && <div>{apiErrors.message}</div>}
+          {apiErrors?.code === 404 && <div>The book you search for was not found</div>}
+          {apiErrors?.code === 500 && <div>Oops! Something went wrong, Please try again.</div>}
         </SearchResultSection>
       </div>
-     
+
       {searchResults.length > 0 && !loading && (
         <div
           style={{ width: "100%", display: "flex", justifyContent: "center" }}

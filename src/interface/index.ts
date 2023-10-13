@@ -66,3 +66,14 @@ export interface IBook {
     selfLink: string;
     volumeInfo: VolumeInfo;
 }
+
+export interface IError {
+    code: number;
+    errors: {
+      message: string;
+      domain: string;
+      reason: string;
+    }[];
+    message: string;
+  }
+  
